@@ -15,6 +15,7 @@ const int MAX_LINE    = 256;  /*Maximum Buffer Size*/
 int
 main(void)
 {
+    puts("HERE");
     char buff[MAX_LINE]; /*Buffer*/
     struct sockaddr_in sin;
     socklen_t new_len;
