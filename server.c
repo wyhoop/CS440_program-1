@@ -8,7 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 
-const int SERVER_PORT = 11000; /*Server Port Number*/
+const int SERVER_PORT = 9876; /*Server Port Number*/
 const int MAX_PENDING = 5;    /*Max Allowed in Queue*/
 const int MAX_LINE    = 256;  /*Maximum Buffer Size*/
 
@@ -20,6 +20,15 @@ main(void)
     struct sockaddr_in sin;
     socklen_t new_len;
     int new_s, s;
+
+    FILE *file = fopen("quotes.txt", "r");
+    if (file == NULL)
+    {
+        err(1, "Unable To Open File");
+    }
+   
+    char *line = NULL;
+    size_t len = 0;
 
     memset((char*)&sin, 0, sizeof sin); /* Used 0 to make the bytes null */
     sin.sin_family = AF_INET;
@@ -44,8 +53,14 @@ main(void)
 	    err(1, "Accept Failed");
 	}
 
-	while (recv(new_s, buff, sizeof buff, 0) > 0)
-	    fputs(buff, stdout);
+	/* while (recv(new_s, buff, sizeof buff, 0) > 0)
+	    fputs(buff, stdout); */
+	while(getline(&line, &len, file) != -1)
+	{
+	    printf(line, stdout);
+	    puts("\n");
+	}
+
     puts("AFTER RECV");
 	close(new_s);
 
