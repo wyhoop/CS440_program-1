@@ -29,13 +29,13 @@ main(void)
     /* Passive Open */
     if ((s = socket(PF_INET, SOCK_STREAM, 0)) == -1)
         err(1, "unable to open socket");
-
+    puts("AFTER PASSIVE OPEN");
     if ((bind(s, (struct sockaddr*)&sin, sizeof sin)) == -1)
 	err(1, "Unable to bind socket");
-
+    puts("AFTER BIND");
     if ((listen(s, MAX_PENDING)) == -1)
 	err(1, "Listen on socket failed");
-
+    puts("AFTER LISTEN");
     /* Get Next Connection */
     while (1) {
 	new_len = sizeof sin;
@@ -46,7 +46,7 @@ main(void)
 
 	while (recv(new_s, buff, sizeof buff, 0) > 0)
 	    fputs(buff, stdout);
-
+    puts("AFTER RECV");
 	close(new_s);
 
     }
