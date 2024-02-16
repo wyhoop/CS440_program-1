@@ -1,3 +1,13 @@
+/*
+ * Written By: Wyatt Hooper
+ * CS440 Assignment 1
+ * February 15, 2024
+ * This program is representative of a simple server in C. It 
+ * opens up and listens on a user defined port and waits for a 
+ * connection to be made by a client. It then sends the client 
+ * terminal a Quote of the Day according to RFC 865 protocol. 
+ */
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -8,15 +18,14 @@
 #include <string.h>
 #include <unistd.h>
 
-const int SERVER_PORT = 9876; /*Server Port Number*/
+const int SERVER_PORT = 11001; /*Server Port Number*/
 const int MAX_PENDING = 5;    /*Max Allowed in Queue*/
 const int MAX_LINE    = 256;  /*Maximum Buffer Size*/
 
 int
 main(void)
 {
-    puts("HERE");
-    char buff[MAX_LINE]; /*Buffer*/
+    puts("HERE"); /* Debugging */
     struct sockaddr_in sin;
     socklen_t new_len;
     int new_s, s;
@@ -37,14 +46,14 @@ main(void)
 
     /* Passive Open */
     if ((s = socket(PF_INET, SOCK_STREAM, 0)) == -1)
-        err(1, "unable to open socket");
-    puts("AFTER PASSIVE OPEN");
+	err(1, "unable to open socket");
+    puts("AFTER PASSIVE OPEN"); /* Debugging */
     if ((bind(s, (struct sockaddr*)&sin, sizeof sin)) == -1)
 	err(1, "Unable to bind socket");
-    puts("AFTER BIND");
+    puts("AFTER BIND"); /* Debugging */
     if ((listen(s, MAX_PENDING)) == -1)
 	err(1, "Listen on socket failed");
-    puts("AFTER LISTEN");
+    puts("AFTER LISTEN"); /*Debugging*/
     /* Get Next Connection */
     while (1) {
 	new_len = sizeof sin;
@@ -55,11 +64,17 @@ main(void)
 
 	/* while (recv(new_s, buff, sizeof buff, 0) > 0)
 	    fputs(buff, stdout); */
-	while(getline(&line, &len, file) != -1)
+	if (getline(&line, &len, file)!= -1)
 	{
-	    printf(line, stdout);
-	    puts("\n");
-	}
+	   // send(new_s, line, strlen(line), 0);
+
+	    send(new_s, line, strlen(line), 0);
+	    close(new_s);
+	    //printf("Quote: %s", line);
+	   // puts("\n");
+	}	
+
+	fclose(file);
 
     puts("AFTER RECV");
 	close(new_s);
