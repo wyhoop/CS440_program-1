@@ -29,7 +29,9 @@ main(void)
     socklen_t new_len;
     int new_s, s;
 
+    /* Open the file in read mode */
     FILE *file = fopen("quotes.txt", "r");
+
     if (file == NULL)
     {
 	/* Handle File open errors */
@@ -67,10 +69,10 @@ main(void)
 	// I did this since we will be outputting using the contents of a 
 	// file
 	if (getline(&line, &length, file)!= -1)
-	{
-	    send(new_s, line, strlen(line), 0); /* This sends and  outputs a quote */
-	}	
-
+	{	
+	    /* This sends and outputs a quote */	
+	    send(new_s, line, strlen(line), 0);
+        }
 
 	close(new_s); /* Closes the socket associated with new_s */
 
