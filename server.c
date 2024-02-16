@@ -75,7 +75,7 @@ main(void)
 	close(new_s); /* Closes the socket associated with new_s */
 
     }
-    
+   /* Close the file */ 
     fclose(file);
     /* NOT REACHED */
     close(s); /* Closes the socket associated with the server */
