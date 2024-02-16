@@ -71,10 +71,11 @@ main(void)
 	    send(new_s, line, strlen(line), 0); /* This sends and  outputs a quote */
 	}	
 
+
 	close(new_s); /* Closes the socket associated with new_s */
 
     }
-
+    
     fclose(file);
     /* NOT REACHED */
     close(s); /* Closes the socket associated with the server */
