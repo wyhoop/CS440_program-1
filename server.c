@@ -25,7 +25,6 @@ const int MAX_LINE    = 256;  /*Maximum Buffer Size*/
 int
 main(void)
 {
-    puts("HERE"); /* Debugging */
     struct sockaddr_in sin;
     socklen_t new_len;
     int new_s, s;
@@ -33,27 +32,29 @@ main(void)
     FILE *file = fopen("quotes.txt", "r");
     if (file == NULL)
     {
+	/* Handle File open errors */
         err(1, "Unable To Open File");
     }
    
     char *line = NULL;
-    size_t len = 0;
+    size_t length = 0;
 
     memset((char*)&sin, 0, sizeof sin); /* Used 0 to make the bytes null */
     sin.sin_family = AF_INET;
     sin.sin_addr.s_addr = INADDR_ANY;
-    sin.sin_port = htons(SERVER_PORT); /* Sets the port number for the server to listen on */
-
+    // Sets the port number for the server to listen on
+    sin.sin_port = htons(SERVER_PORT); 
+   
     /* Passive Open */
     if ((s = socket(PF_INET, SOCK_STREAM, 0)) == -1)
 	err(1, "unable to open socket");
-    puts("AFTER PASSIVE OPEN"); /* Debugging */
+
     if ((bind(s, (struct sockaddr*)&sin, sizeof sin)) == -1)
 	err(1, "Unable to bind socket");
-    puts("AFTER BIND"); /* Debugging */
+
     if ((listen(s, MAX_PENDING)) == -1)
 	err(1, "Listen on socket failed");
-    puts("AFTER LISTEN"); /*Debugging*/
+
     /* Get Next Connection */
     while (1) {
 	new_len = sizeof sin;
@@ -62,27 +63,21 @@ main(void)
 	    err(1, "Accept Failed");
 	}
 
-	/* while (recv(new_s, buff, sizeof buff, 0) > 0)
-	    fputs(buff, stdout); */
-	if (getline(&line, &len, file)!= -1)
+	// This if block replaces the previous while loop that took in data.
+	// I did this since we will be outputting using the contents of a 
+	// file
+	if (getline(&line, &length, file)!= -1)
 	{
-	   // send(new_s, line, strlen(line), 0);
-
-	    send(new_s, line, strlen(line), 0);
-	    close(new_s);
-	    //printf("Quote: %s", line);
-	   // puts("\n");
+	    send(new_s, line, strlen(line), 0); /* This sends and  outputs a quote */
 	}	
 
-	fclose(file);
-
-    puts("AFTER RECV");
-	close(new_s);
+	close(new_s); /* Closes the socket associated with new_s */
 
     }
 
+    fclose(file);
     /* NOT REACHED */
-    close(s);
+    close(s); /* Closes the socket associated with the server */
 
     return 0;
 }
