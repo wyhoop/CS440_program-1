@@ -18,7 +18,7 @@
 #include <string.h>
 #include <unistd.h>
 
-const int SERVER_PORT = 11001; /*Server Port Number*/
+const int SERVER_PORT = 8017; /*Server Port Number*/
 const int MAX_PENDING = 5;    /*Max Allowed in Queue*/
 const int MAX_LINE    = 256;  /*Maximum Buffer Size*/
 
