@@ -1,11 +1,14 @@
 CFLAGS = -Wall -g
 
-all: server
+all: server client
 
 .PHONY: all clean
 
 server: server.c
 	${CC} ${CFLAGS} -o $@ server.c
 
+client: client.c
+	${CC} ${CFLAGS} -o $@ client.c
+
 clean:
-	@rm -f server
+	@rm -f server client
