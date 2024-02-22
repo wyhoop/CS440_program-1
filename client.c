@@ -1,6 +1,11 @@
 /* Wyatt Hooper
- * CS 440
- * Simple client example
+ * CS 440 Assignment 1
+ * February 21, 2024
+ * This program is representative of a simple client in C. It
+ * receives incoming data from the server listening on the port
+ * 8017, then it stores the received data into a buffer and prints
+ * the quote while the program is still receiving data. It should
+ * conform to the RFC 865 protocol. 
  */
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -12,16 +17,15 @@
 #include <string.h>
 #include <unistd.h>
 
-const int SERVER_PORT = 11001;
-// 512 is compliant with RFCX 865 recommendations
+const int SERVER_PORT = 8017;
 const int MAX_LINE    = 512;
+// 512 is recommended by RFC 865 
 int
 main(int argc, char *argv[])
 {
     struct sockaddr_in sin;
     char buff[MAX_LINE]; /* An array of bytes */
     struct hostent *hp;
-    //char data_received;
     char* hostname; /* Points to where it is stored */
     ssize_t bytes_received;
     int s;
@@ -41,11 +45,13 @@ main(int argc, char *argv[])
 
     /* build address data structure*/
     // C-style cast
-    memset((char*)&sin, 0, sizeof sin); // Used 0 because we want to make the bytes null, 0 is an easy way to accomplish that
-					// Zeroing out the memory occupied by sin.
+    memset((char*)&sin, 0, sizeof sin);
+			
     sin.sin_family = AF_INET;
-    memcpy((char*)&sin.sin_addr.s_addr, hp -> h_addr, hp->h_length); /* Conceptually a for loop copying values into one array from the other byte by byte */
-    sin.sin_port = htons(SERVER_PORT); // Convert to network byte order from big or little indian
+    memcpy((char*)&sin.sin_addr.s_addr, hp -> h_addr, hp->h_length);
+    
+    // Convert to network byte order from big or little endian
+    sin.sin_port = htons(SERVER_PORT);
 
     if ((s = socket(PF_INET, SOCK_STREAM, 0)) == -1)
 	    err(1, "Unable to open socket");
@@ -57,7 +63,7 @@ main(int argc, char *argv[])
 
     while((bytes_received = recv(s, buff, sizeof buff, 0))) {
 	printf("Quote: %s\n", buff);
-	}	
+    }	
     
     /*NOT REACHED*/
     close(s);
@@ -65,5 +71,3 @@ main(int argc, char *argv[])
     return 0;
 }
 
-// socket, binf, listen, accept
-//
