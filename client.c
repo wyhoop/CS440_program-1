@@ -62,7 +62,7 @@ main(int argc, char *argv[])
     }
 
     while((bytes_received = recv(s, buff, sizeof buff, 0))) {
-	printf("Quote: %s\n", buff);
+	printf("%s",buff);
     }	
     
     /*NOT REACHED*/
